@@ -1,0 +1,19 @@
+module ex01_01 where
+
+-- prerequisites
+
+Path     (A: U) (a b: A): U = PathP (<i> A) a b
+refl     (A: U) (a: A): Path A a a = <i> a
+
+-- exercise
+
+compose (A B C: U) (g: B -> C) (f: A -> B) : (A -> C)
+  = \(x:A) -> g (f x)
+
+composeAssoc
+  (A B C D: U)
+  (h: C -> D)
+  (g: B -> C)
+  (f: A -> B)
+  : Path (A -> D) (compose h (compose g f)) (compose (compose h g) f)
+  = refl (A -> D) (compose h (compose g f))
