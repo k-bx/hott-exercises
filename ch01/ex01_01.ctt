@@ -15,5 +15,5 @@ composeAssoc
   (h: C -> D)
   (g: B -> C)
   (f: A -> B)
-  : Path (A -> D) (compose h (compose g f)) (compose (compose h g) f)
-  = refl (A -> D) (compose h (compose g f))
+  : Path (A -> D) (compose A C D h (compose A B C g f)) (compose A B D (compose B C D h g) f)
+  = refl (A -> D) (compose A C D h (compose A B C g f))
