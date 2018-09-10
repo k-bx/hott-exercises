@@ -14,12 +14,29 @@ pair_pr1 (A B : U) : (pair A B) -> A = split
 pair_pr2 (A B : U) : (pair A B) -> B = split
   pairC a b -> b
 
--- exercise
+data sigma (A : U) (B : (A -> U))
+  = sigmaC (a : A) (b : B a)
+
+sigma_pr1 (A : U) (B : (A -> U)) : sigma A B -> A = split
+  sigmaC a b -> a
+
+sigma_pr2 (A : U) (B : (A -> U))
+  : (p : sigma A B) -> B (sigma_pr1 A B p) = split
+  sigmaC a b -> b
 
 rec_pair (A B : U) (C : U) (g : A -> B -> C)
-  : (pair A B) -> C
-  = split
-    pairC a b -> g a b
+  : (pair A B) -> C = split
+  pairC a b -> g a b
+
+rec_sigma
+  (A : U)
+  (B : (A -> U))
+  (C : U)
+  (g : (x : A) -> B x -> C)
+  : (sigma A B) -> C = split
+  sigmaC a b -> g a b
+
+-- exercise
 
 rec_pair_proj (A B : U) (C : U) (g : A -> B -> C) (p : pair A B) : C
   = g (pair_pr1 A B p) (pair_pr2 A B p)
@@ -39,3 +56,23 @@ rec_pair_definitional_equalities2
   (b : B)
   : Path C (rec_pair A B C g (pairC a b)) (rec_pair_proj A B C g (pairC a b))
   = refl C (rec_pair A B C g (pairC a b))
+
+rec_sigma_proj
+  (A : U)
+  (B : (A -> U))
+  (C : U)
+  (g : (x : A) -> B x -> C)
+  (s : sigma A B)
+  : C
+  = g (sigma_pr1 A B s) (sigma_pr2 A B s)
+
+rec_sigma_definitional_equalities
+  (A : U)
+  (B : (A -> U))
+  (C : U)
+  (g : (x : A) -> B x -> C)
+  (a : A)
+  (b : B a)
+  : Path C (rec_sigma A B C g (sigmaC a b))
+           (rec_sigma_proj A B C g (sigmaC a b))
+  = refl C (rec_sigma A B C g (sigmaC a b))
