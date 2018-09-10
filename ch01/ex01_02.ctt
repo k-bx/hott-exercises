@@ -1,0 +1,32 @@
+module ex01_02 where
+
+-- prerequisites
+
+Path     (A : U) (a b : A) : U = PathP (<i> A) a b
+refl     (A : U) (a : A) : Path A a a = <i> a
+
+data pair (A : U) (B : U)
+  = pair (a : A) (b : B)
+
+pair_pr1 (A B : U) : (pair A B) -> A = split
+  pair a b -> a
+
+pair_pr2 (A B : U) : (pair A B) -> B = split
+  pair a b -> b
+
+-- exercise
+
+rec_pair (A B : U) (C : U) (g : A -> B -> C)
+  : (pair A B) -> C
+  = split
+    pair a b -> g a b
+
+rec_pair_proj (A B : U) (C : U) (g : A -> B -> C) (p : pair A B) : C
+  = g (pair_pr1 A B p) (pair_pr2 A B p)
+
+rec_pair_definitional_equalities
+  (A B C : U)
+  (g : A -> B -> C)
+  (p : pair A B)
+  : Path C (rec_pair A B C g p) (rec_pair_proj A B C g p)
+  = refl C (rec_pair A B C g p)
