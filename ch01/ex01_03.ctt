@@ -1,0 +1,35 @@
+module ex01_03 where
+
+-- prerequisites
+
+Path     (A : U) (a b : A) : U = PathP (<i> A) a b
+refl     (A : U) (a : A) : Path A a a = <i> a
+
+data pair (A : U) (B : U)
+  = pairC (a : A) (b : B)
+
+ind_pair
+  (A : U)
+  (B : U)
+  (C : (pair A B) -> U)
+  (g : (x : A) -> (y : B) -> C (pairC x y))
+  : ((z : pair A B) -> C z)
+  = split
+  pairC a b -> g a b
+
+pair_pr1 (A B : U) : (pair A B) -> A = split
+  pairC a b -> a
+
+pair_pr2 (A B : U) : (pair A B) -> B = split
+  pairC a b -> b
+
+-- exercise
+
+ind_pair_proj
+  (A : U)
+  (B : U)
+  (C : (pair A B) -> U)
+  (g : (x : A) -> (y : B) -> C (pairC x y))
+  (z : pair A B)
+  : C z
+  = g (pair_pr1 A B z) (pair_pr2 A B z)
