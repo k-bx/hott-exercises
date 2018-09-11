@@ -93,3 +93,18 @@ ind_pair_proj_split
             (uniq_pair A B a b)
             (g (pair_pr1 A B (pairC a b))
                (pair_pr2 A B (pairC a b)))
+
+-- implementation via "transport" instead of "subst"
+ind_pair_proj_transport
+  (A : U)
+  (B : U)
+  (C : (pair A B) -> U)
+  (g : (x : A) -> (y : B) -> C (pairC x y))
+  : (z : pair A B)
+  -> C z
+  = split
+    pairC a b ->
+      transport
+        (<i> C ((uniq_pair A B a b) @ i))
+        (g (pair_pr1 A B (pairC a b))
+           (pair_pr2 A B (pairC a b)))
