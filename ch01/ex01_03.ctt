@@ -23,6 +23,19 @@ pair_pr1 (A B : U) : (pair A B) -> A = split
 pair_pr2 (A B : U) : (pair A B) -> B = split
   pairC a b -> b
 
+uniq_pair_nonworking
+  (A B : U)
+  (x : pair A B)
+  : Path (pair A B) (pairC (pair_pr1 A B x) (pair_pr2 A B x)) x
+  = refl (pair A B) x
+
+uniq_pair
+  (A B : U)
+  (a : A)
+  (b : B)
+  : Path (pair A B) (pairC (pair_pr1 A B (pairC a b)) (pair_pr2 A B (pairC a b))) (pairC a b)
+  = refl (pair A B) (pairC a b)
+
 -- exercise
 
 ind_pair_proj
@@ -32,4 +45,5 @@ ind_pair_proj
   (g : (x : A) -> (y : B) -> C (pairC x y))
   (z : pair A B)
   : C z
-  = g (pair_pr1 A B z) (pair_pr2 A B z)
+  = ?
+  -- = g (pair_pr1 A B z) (pair_pr2 A B z)
