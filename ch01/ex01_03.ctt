@@ -31,6 +31,18 @@ pair_pr2 (A B : U) : (pair A B) -> B = split
 --                     x
 --   = refl (pair A B) x
 
+-- Maxim pointed out that beta-reductions and fusion work out of the
+-- box only with Pi and Sigma, but here I've used an inductive type
+-- (via `data`), thus I need to make a case-analysis and prove
+-- separately for every constructor (only `pairC` in this case)
+uniq_pair_nonworking_fixed
+  (A B : U)
+  (x : pair A B)
+  : Path (pair A B) (pairC (pair_pr1 A B x)
+                           (pair_pr2 A B x))
+                    x
+  = split pairC a b -> <i> pairC a b
+
 uniq_pair
   (A B : U)
   (a : A)
