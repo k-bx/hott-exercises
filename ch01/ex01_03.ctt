@@ -5,6 +5,9 @@ module ex01_03 where
 Path     (A : U) (a b : A) : U = PathP (<i> A) a b
 refl     (A : U) (a : A) : Path A a a = <i> a
 
+subst (A : U) (P : A -> U) (a b : A)
+      (p : Path A a b) (e : P a) : P b = transport (<i> P (p @ i)) e
+
 data pair (A : U) (B : U)
   = pairC (a : A) (b : B)
 
@@ -37,10 +40,10 @@ pair_pr2 (A B : U) : (pair A B) -> B = split
 -- separately for every constructor (only `pairC` in this case)
 uniq_pair_nonworking_fixed
   (A B : U)
-  (x : pair A B)
-  : Path (pair A B) (pairC (pair_pr1 A B x)
-                           (pair_pr2 A B x))
-                    x
+  : (x : pair A B)
+  -> Path (pair A B) (pairC (pair_pr1 A B x)
+                            (pair_pr2 A B x))
+                     x
   = split pairC a b -> <i> pairC a b
 
 uniq_pair
@@ -54,12 +57,39 @@ uniq_pair
 
 -- exercise
 
-ind_pair_proj
+-- this one uses explicit (a : A) and (b : B), will try to split later
+ind_pair_proj_nosplit
   (A : U)
   (B : U)
   (C : (pair A B) -> U)
   (g : (x : A) -> (y : B) -> C (pairC x y))
-  (z : pair A B)
-  : C z
-  = ?
-  -- = g (pair_pr1 A B z) (pair_pr2 A B z)
+  (a : A)
+  (b : B)
+  : C (pairC a b)
+  -- = ?
+  = subst (pair A B)
+          C
+          (pairC (pair_pr1 A B (pairC a b)) (pair_pr2 A B (pairC a b)))
+          (pairC a b)
+          (uniq_pair A B a b)
+          (g (pair_pr1 A B (pairC a b)) (pair_pr2 A B (pairC a b)))
+
+-- still constructs a (pairC a b) in the body, but the type-signature
+-- is close to HoTT's
+ind_pair_proj_split
+  (A : U)
+  (B : U)
+  (C : (pair A B) -> U)
+  (g : (x : A) -> (y : B) -> C (pairC x y))
+  : (z : pair A B)
+  -> C z
+  = split
+    pairC a b ->
+      subst (pair A B)
+            C
+            (pairC (pair_pr1 A B (pairC a b))
+                   (pair_pr2 A B (pairC a b)))
+            (pairC a b)
+            (uniq_pair A B a b)
+            (g (pair_pr1 A B (pairC a b))
+               (pair_pr2 A B (pairC a b)))
