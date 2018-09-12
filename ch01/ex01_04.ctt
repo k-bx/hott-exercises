@@ -1,0 +1,62 @@
+module ex01_04 where
+
+-- prerequisites
+
+Path     (A : U) (a b : A) : U = PathP (<i> A) a b
+refl     (A : U) (a : A) : Path A a a = <i> a
+
+data nat = z
+         | suc (n : nat)
+
+iter_nat
+  (C : U)
+  (c0 : C)
+  (cs : C -> C)
+  : nat -> C
+  = split
+    z -> c0
+    suc n -> iter_nat C c0 cs n
+
+rec_nat
+  (C : U)
+  (c0 : C)
+  (cs : nat -> C -> C)
+  : nat -> C
+  = split
+    z -> c0
+    suc n -> cs n (rec_nat C c0 cs n)
+
+-- exercise
+
+rec_nat_derived
+  (C : U)
+  (c0 : C)
+  (cs : nat -> C -> C)
+  (n : nat)
+  : C
+  = iter_nat C c0 (cs n) n
+
+double_01 : nat -> nat
+  = rec_nat nat z (\(n : nat) -> \(y : nat) -> suc (suc y))
+
+double_02 : nat -> nat
+  = rec_nat_derived nat z (\(n : nat) -> \(y : nat) -> suc (suc y))
+
+-- equality for a "zero" case. not sure if it's ever useful
+rec_nat_eq_rec_nat_derived_z
+  (C : U)
+  (c0 : C)
+  (cs : nat -> C -> C)
+  : Path C (rec_nat C c0 cs z) (rec_nat_derived C c0 cs z)
+  = refl C (rec_nat C c0 cs z)
+
+-- TODO: no idea how to implement
+-- rec_nat_eq_rec_nat_derived_suc
+--   (C : U)
+--   (c0 : C)
+--   (cs : nat -> C -> C)
+--   (n : nat)
+--   : nat -> Path C (rec_nat C c0 cs n) (rec_nat_derived C c0 cs n)
+--   = split
+--     z -> refl C (rec_nat C c0 cs n)
+--     suc n2 -> refl C (rec_nat C c0 cs n)
