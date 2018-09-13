@@ -15,7 +15,7 @@ iter_nat
   : nat -> C
   = split
     z -> c0
-    suc n -> iter_nat C c0 cs n
+    suc n -> cs (iter_nat C c0 cs n)
 
 rec_nat
   (C : U)
@@ -50,7 +50,16 @@ rec_nat_eq_rec_nat_derived_z
   : Path C (rec_nat C c0 cs z) (rec_nat_derived C c0 cs z)
   = refl C (rec_nat C c0 cs z)
 
--- TODO: no idea how to implement
+-- -- TODO: check why this doesn't compile
+-- -- equality for a "zero" case. not sure if it's ever useful
+-- rec_nat_eq_rec_nat_derived_one
+--   (C : U)
+--   (c0 : C)
+--   (cs : nat -> C -> C)
+--   : Path C (rec_nat C c0 cs (suc z)) (rec_nat_derived C c0 cs (suc z))
+--   = refl C (rec_nat C c0 cs (suc z))
+
+-- -- TODO: no idea how to implement
 -- rec_nat_eq_rec_nat_derived_suc
 --   (C : U)
 --   (c0 : C)
