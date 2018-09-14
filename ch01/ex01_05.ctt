@@ -1,0 +1,74 @@
+module ex01_05 where
+
+-- prerequisites
+
+Path     (A : U) (a b : A) : U = PathP (<i> A) a b
+refl     (A : U) (a : A) : Path A a a = <i> a
+
+-- written as "2" in HoTT (see 1.8 "The type of booleans")
+data bool = false | true
+
+rec_bool
+  (C : U)
+  (c0 : C)
+  (c1 : C)
+  : bool -> C
+  = split
+    false -> c0
+    true -> c1
+
+ind_bool
+  (C : bool -> U)
+  (x0 : C false)
+  (x1 : C true)
+  : (x : bool) -> C x
+  = split
+    false -> x0
+    true -> x1
+
+plus
+  (A B : U)
+  : U
+  = (x : bool)
+  * (rec_bool U A B x)
+
+inl
+  (A B : U)
+  (a : A)
+  : plus A B
+  = (false, a)
+
+inr
+  (A B : U)
+  (b : B)
+  : plus A B
+  = (true, b)
+
+-- exercise
+
+-- induction for coproducts
+
+Sigma (A : U) (B : A -> U) : U = (x : A) * B x
+
+ind_plus_helper
+  (A B : U)
+  (C : plus A B -> U)
+  (x : plus A B)
+  (g0 : ((a : A) -> C (inl A B a)))
+  (g1 : ((b : B) -> C (inr A B b)))
+  : (x1 : bool) -> (x2 : rec_bool U A B x1) -> C (x1, x2)
+  = split
+    false -> g0
+    true -> g1
+
+ind_plus
+  (A B : U)
+  (C : plus A B -> U)
+  (g0 : ((a : A) -> C (inl A B a)))
+  (g1 : ((b : B) -> C (inr A B b)))
+  (x : plus A B)
+  : C x
+  = ind_plus_helper A B C x g0 g1 (x.1) (x.2)
+
+-- TODO: prove that "for which the definitional equalities stated in
+-- $1.7 hold (see the exercise)
