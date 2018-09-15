@@ -70,5 +70,22 @@ ind_plus
   : C x
   = ind_plus_helper A B C x g0 g1 (x.1) (x.2)
 
--- TODO: prove that "for which the definitional equalities stated in
--- $1.7 hold (see the exercise)
+ind_plus_eq01
+  (A B : U)
+  (C : plus A B -> U)
+  (g0 : ((a : A) -> C (inl A B a)))
+  (g1 : ((b : B) -> C (inr A B b)))
+  -- (x : plus A B)
+  (a : A)
+  : Path (C (inl A B a)) (ind_plus A B C g0 g1 (inl A B a)) (g0 a)
+  = refl (C (inl A B a)) (g0 a)
+
+ind_plus_eq02
+  (A B : U)
+  (C : plus A B -> U)
+  (g0 : ((a : A) -> C (inl A B a)))
+  (g1 : ((b : B) -> C (inr A B b)))
+  (a : A)
+  (b : B)
+  : Path (C (inr A B b)) (ind_plus A B C g0 g1 (inr A B b)) (g1 b)
+  = refl (C (inr A B b)) (g1 b)
