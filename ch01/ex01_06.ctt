@@ -1,0 +1,4 @@
+module ex01_06 where
+
+-- TODO (This requires the function extensionality axiom, which is
+-- introduced in §2.9.)

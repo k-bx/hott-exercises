@@ -1,0 +1,20 @@
+module ex01_07 where
+
+-- prerequisites
+
+Path     (A : U) (a b : A) : U = PathP (<i> A) a b
+refl     (A : U) (a : A) : Path A a a = <i> a
+
+ind_path
+  (A : U)
+  (C : (x : A) -> (y : A) -> (Path A x y) -> U)
+  (c : (x : A) -> C x x (refl A x))
+  (x : A)
+  (y : A)
+  : (p : Path A x y) -> C x y p
+  = split
+    refl A x -> c x
+
+-- TODO: fails
+
+-- exerise
